@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Market Consultant Agent</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header__content">
+                <div class="header__logo">
+                    <h1>📈 Stock Market Consultant Agent</h1>
+                </div>
+                <nav class="header__nav">
+                    <button class="nav__tab active" data-tab="dashboard">Dashboard</button>
+                    <button class="nav__tab" data-tab="portfolio">Portfolio</button>
+                    <button class="nav__tab" data-tab="advice">Advice</button>
+                    <button class="nav__tab" data-tab="analytics">Analytics</button>
+                    <button class="nav__tab" data-tab="education">Learn</button>
+                </nav>
+                <div class="header__actions">
+                    <div class="market-status">
+                        <span class="status-indicator status--success"></span>
+                        Market Open
+                    </div>
+                    <button class="btn btn--outline btn--sm" id="themeToggle">🌙</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Dashboard Tab -->
+        <section class="tab-content active" id="dashboard">
+            <div class="container">
+                <div class="dashboard">
+                    <!-- Welcome Section -->
+                    <div class="welcome-section">
+                        <h2>Welcome to Your Stock Market Consultant</h2>
+                        <p>Get personalized investment advice in plain English. Perfect for beginners and experienced investors alike.</p>
+                        <button class="btn btn--primary btn--lg" id="getStartedBtn">Get Started with Your Portfolio</button>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3 id="totalAdvice">0</h3>
+                            <p>Advice Given</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="portfolioValue">$0</h3>
+                            <p>Portfolio Tracked</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="successRate">85%</h3>
+                            <p>Success Rate</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="reportsGenerated">0</h3>
+                            <p>Reports Generated</p>
+                        </div>
+                    </div>
+
+                    <!-- Market Overview -->
+                    <div class="dashboard-grid">
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Market Overview</h3>
+                                <div class="indices-list" id="marketIndices">
+                                    <!-- Market indices will be populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Top Sectors</h3>
+                                <div class="sectors-list" id="sectorsPerformance">
+                                    <!-- Sectors will be populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Market News</h3>
+                                <div class="news-list" id="marketNews">
+                                    <!-- News will be populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Tab -->
+        <section class="tab-content" id="portfolio">
+            <div class="container">
+                <div class="portfolio-section">
+                    <h2>Your Portfolio</h2>
+                    
+                    <!-- Add Stock Form -->
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>Add Stock to Portfolio</h3>
+                            <form class="stock-form" id="stockForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="stockSymbol">Stock Symbol</label>
+                                        <input type="text" class="form-control" id="stockSymbol" placeholder="e.g., AAPL" required>
+                                        <div class="suggestions-dropdown" id="suggestions"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="quantity">Quantity</label>
+                                        <input type="number" class="form-control" id="quantity" min="1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="purchasePrice">Purchase Price ($)</label>
+                                        <input type="number" class="form-control" id="purchasePrice" step="0.01" min="0" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="purchaseDate">Purchase Date</label>
+                                        <input type="date" class="form-control" id="purchaseDate" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn--primary">Add to Portfolio</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Portfolio Table -->
+                    <div class="card">
+                        <div class="card__body">
+                            <div class="portfolio-header">
+                                <h3>Current Holdings</h3>
+                                <div class="portfolio-summary">
+                                    <span>Total Value: <strong id="totalPortfolioValue">$0.00</strong></span>
+                                    <span>Total P&L: <strong id="totalPL" class="pl-neutral">$0.00</strong></span>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table class="portfolio-table" id="portfolioTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Symbol</th>
+                                            <th>Company</th>
+                                            <th>Quantity</th>
+                                            <th>Purchase Price</th>
+                                            <th>Current Price</th>
+                                            <th>Total Value</th>
+                                            <th>P&L</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="empty-state">
+                                            <td colspan="8">No stocks in portfolio. Add your first stock above.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Advice Tab -->
+        <section class="tab-content" id="advice">
+            <div class="container">
+                <div class="advice-section">
+                    <h2>AI Investment Advice</h2>
+                    
+                    <div class="advice-controls">
+                        <button class="btn btn--primary btn--lg" id="analyzePortfolio">
+                            🤖 Analyze My Portfolio
+                        </button>
+                        <div class="analysis-status" id="analysisStatus"></div>
+                    </div>
+
+                    <div class="advice-results" id="adviceResults">
+                        <!-- Advice results will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Tab -->
+        <section class="tab-content" id="analytics">
+            <div class="container">
+                <div class="analytics-section">
+                    <h2>Portfolio Analytics</h2>
+                    
+                    <div class="analytics-grid">
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Asset Allocation</h3>
+                                <div class="chart-container" style="position: relative; height: 300px;">
+                                    <canvas id="allocationChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Risk Distribution</h3>
+                                <div class="chart-container" style="position: relative; height: 300px;">
+                                    <canvas id="riskChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Sector Allocation</h3>
+                                <div class="chart-container" style="position: relative; height: 300px;">
+                                    <canvas id="sectorChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Performance vs Market</h3>
+                                <div class="chart-container" style="position: relative; height: 300px;">
+                                    <canvas id="performanceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education Tab -->
+        <section class="tab-content" id="education">
+            <div class="container">
+                <div class="education-section">
+                    <h2>Learn Stock Market Basics</h2>
+                    
+                    <div class="education-grid">
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Investment Terms</h3>
+                                <div class="terms-list" id="investmentTerms">
+                                    <!-- Terms will be populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Risk Assessment</h3>
+                                <p>Understanding your risk tolerance is crucial for successful investing.</p>
+                                <div class="risk-levels" id="riskLevels">
+                                    <!-- Risk levels will be populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Investment Strategies</h3>
+                                <div class="strategies-list">
+                                    <div class="strategy-item">
+                                        <h4>Dollar-Cost Averaging</h4>
+                                        <p>Invest a fixed amount regularly regardless of market conditions to reduce timing risk.</p>
+                                    </div>
+                                    <div class="strategy-item">
+                                        <h4>Diversification</h4>
+                                        <p>Spread investments across different assets and sectors to minimize risk.</p>
+                                    </div>
+                                    <div class="strategy-item">
+                                        <h4>Buy and Hold</h4>
+                                        <p>Long-term investment approach focusing on quality companies.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Frequently Asked Questions</h3>
+                                <div class="faq-list">
+                                    <details class="faq-item">
+                                        <summary>When is the best time to invest?</summary>
+                                        <p>The best time to invest is when you have a clear financial goal and can afford to invest without compromising your emergency fund.</p>
+                                    </details>
+                                    <details class="faq-item">
+                                        <summary>How much should I invest?</summary>
+                                        <p>A general rule is to invest 10-20% of your income after covering essential expenses and building an emergency fund.</p>
+                                    </details>
+                                    <details class="faq-item">
+                                        <summary>Should I invest in individual stocks or mutual funds?</summary>
+                                        <p>Beginners often benefit from mutual funds or ETFs for instant diversification, while individual stocks require more research and risk tolerance.</p>
+                                    </details>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="disclaimer">
+                    <h4>⚠️ Important Disclaimer</h4>
+                    <p id="disclaimerText">
+                        Investment in securities market are subject to market risks, read all the related documents carefully before investing. 
+                        This application provides educational information and should not be considered as personalized investment advice. 
+                        Please consult with a SEBI registered investment advisor before making investment decisions.
+                    </p>
+                </div>
+                <div class="footer__stats">
+                    <p>Total Sessions: <span id="totalSessions">1</span> | Built with ❤️ for investors</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for Risk Warnings -->
+    <div class="modal hidden" id="riskWarningModal">
+        <div class="modal__backdrop"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>⚠️ High Risk Warning</h3>
+            </div>
+            <div class="modal__body">
+                <p>This recommendation involves high risk. Please ensure you understand the potential for significant losses before proceeding.</p>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--outline" id="modalCancel">I Understand the Risks</button>
+                <button class="btn btn--primary" id="modalConfirm">Proceed with Caution</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
